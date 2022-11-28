@@ -1,6 +1,12 @@
-export const sum = (a: number, b: number) => {
-  if ('development' === process.env.NODE_ENV) {
-    console.log('boop');
-  }
-  return a + b;
-};
+import {ethers} from "ethers";
+
+export class PNS {
+
+    protected  provider?: ethers.providers.Provider;
+
+    constructor() {
+    }
+}
+
+export default PNS;
+

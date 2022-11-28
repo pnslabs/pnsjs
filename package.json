@@ -19,7 +19,9 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "ethers": "*"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -33,6 +35,7 @@
   },
   "name": "pnsjs",
   "author": "Njoku Emmanuel",
+  "description": "A Javascript library for interacting with the PNS smart contract",
   "module": "dist/pnsjs.esm.js",
   "size-limit": [
     {
@@ -44,8 +47,17 @@
       "limit": "10 KB"
     }
   ],
+  "dependencies": {
+    "ethers": "^5.6.1"
+  },
   "devDependencies": {
+    "@ethersproject/abi": "^5.6.0",
+    "@ethersproject/providers": "^5.6.2",
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
+    "@openzeppelin/contracts": "^4.5.0",
     "@size-limit/preset-small-lib": "^8.1.0",
+    "dotenv": "^16.0.3",
+    "hardhat": "^2.12.2",
     "husky": "^8.0.2",
     "size-limit": "^8.1.0",
     "tsdx": "^0.14.1",
