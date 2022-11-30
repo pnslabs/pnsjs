@@ -1,0 +1,4 @@
+export const core = {
+    PNSCore: '0x1d1eb8e8293222e1a29d2d6b34aa343f7d864858',
+    PnsGuardian: '0x0000000000000000000000000000000000000000',
+}
