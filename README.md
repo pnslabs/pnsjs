@@ -1,4 +1,4 @@
-# ![PNSjs](https://raw.githubusercontent.com/pnsfoundation/pns-website/main/public/icons/logo.svg?token=GHSAT0AAAAAABTHTOKCC2JFHQ3WTUROU6GYY4H3QBA);
+# ![PNSjs](https://raw.githubusercontent.com/pnsfoundation/pns-website/main/public/icons/logo.svg?token=GHSAT0AAAAAABTHTOKCC2JFHQ3WTUROU6GYY4H3QBA)
 
 The PNS javascript library, with [ethers.js](https://github.com/ethers-io/ethers.js) under the hood.
 
