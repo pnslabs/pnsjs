@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils'
 
-export const PNSCoreAbi: AbiItem[] =  [
+export const ResolverAbi: AbiItem[] =  [
     {
         anonymous: false,
         inputs: [
