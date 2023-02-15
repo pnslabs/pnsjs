@@ -11,11 +11,34 @@ import { ErrorMessage, hashPhoneNumber } from '../utils';
 const getResolver = async (phoneNumber: string, contract: IContract) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
-    const res = await contract.method.getResolver(hash);
-    return res;
+    const resolver = await contract.method.getResolver(hash);
+    return resolver;
   } catch (error) {
     ErrorMessage(error);
   }
 };
 
-export default { getResolver };
+/**
+ * @dev Interacts with the smart contract to add a new resolver to a given phone record
+ * @param phoneNumber Phone number of the record
+ * @param address Address of the new resolver
+ * @param label Ceypro label
+ * @param contract Contract object
+ */
+
+const linkPhoneToWallet = async (
+  phoneNumber: string,
+  address: string,
+  label: string,
+  contract: IContract
+) => {
+  try {
+    const hash = hashPhoneNumber(phoneNumber);
+    const tx = await contract.method.linkPhoneToWallet(hash, address, label);
+    tx.wait();
+  } catch (error) {
+    ErrorMessage(error);
+  }
+};
+
+export default { getResolver, linkPhoneToWallet };
