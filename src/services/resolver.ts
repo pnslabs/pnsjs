@@ -36,6 +36,8 @@ const linkPhoneToWalletFunc = async (
     const hash = hashPhoneNumber(phoneNumber);
     const tx = await contract.method.linkPhoneToWallet(hash, address, label);
     tx.wait();
+
+    return tx;
   } catch (error) {
     ErrorMessage(error);
   }
