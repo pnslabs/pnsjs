@@ -2,6 +2,7 @@ import { PNSRegistryAbi } from './abi';
 import { core } from './addresses';
 import { Contract } from './libs/contract';
 import { IChainId, IContract, IProvider } from './types';
+import { ErrorMessage } from './utils';
 
 export class PNS {
   protected provider?: IProvider;
@@ -12,7 +13,7 @@ export class PNS {
     this.provider = provider;
     this.provider?.getNetwork()?.then(network => {
       if (![1, 5].includes(network?.chainId)) {
-        throw new Error(
+        ErrorMessage(
           `Invalid chainId: ChainID ${network.chainId} is not supported`
         );
       } else {
