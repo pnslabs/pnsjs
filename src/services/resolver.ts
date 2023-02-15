@@ -8,7 +8,7 @@ import { ErrorMessage, hashPhoneNumber } from '../utils';
  * @returns An array of resolvers
  */
 
-const getResolver = async (phoneNumber: string, contract: IContract) => {
+const getResolverFunc = async (phoneNumber: string, contract: IContract) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
     const resolver = await contract.method.getResolver(hash);
@@ -26,7 +26,7 @@ const getResolver = async (phoneNumber: string, contract: IContract) => {
  * @param contract Contract object
  */
 
-const linkPhoneToWallet = async (
+const linkPhoneToWalletFunc = async (
   phoneNumber: string,
   address: string,
   label: string,
@@ -41,4 +41,4 @@ const linkPhoneToWallet = async (
   }
 };
 
-export default { getResolver, linkPhoneToWallet };
+export { getResolverFunc, linkPhoneToWalletFunc };

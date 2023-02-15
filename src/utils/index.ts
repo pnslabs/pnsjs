@@ -16,7 +16,11 @@ export const hashPhoneNumber = (phoneNumber: string) => {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ErrorMessage = (message?: any) => {
-  const defaultMsg = 'Something went wrong. Please try again later.';
+  const defaultMsg =
+    message && typeof message === 'string'
+      ? message
+      : 'Something went wrong. Please try again later.';
+
   return new Promise(resolve => {
     resolve(new Error(message?.errorArgs[0] || defaultMsg));
   });

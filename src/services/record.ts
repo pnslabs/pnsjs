@@ -9,7 +9,7 @@ import { getRegistryCostInETH } from './libs';
  * @returns The record object information
  */
 
-const getRecord = async (phoneNumber: string, contract: IContract) => {
+const getRecordFunc = async (phoneNumber: string, contract: IContract) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
     const phoneRecord = await contract.method.getRecord(hash);
@@ -27,7 +27,7 @@ const getRecord = async (phoneNumber: string, contract: IContract) => {
  * @param contract Contract object
  * @returns The transaction response
  */
-const setPhoneRecord = async (
+const setPhoneRecordFunc = async (
   phoneNumber: string,
   signer: string,
   label: string,
@@ -59,7 +59,10 @@ const setPhoneRecord = async (
  * @param contract Contract object
  * @returns A boolean value indicating the verification status of the record
  */
-const isRecordVerified = async (phoneNumber: string, contract: IContract) => {
+const isRecordVerifiedFunc = async (
+  phoneNumber: string,
+  contract: IContract
+) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
 
@@ -77,7 +80,7 @@ const isRecordVerified = async (phoneNumber: string, contract: IContract) => {
  * @param contract Contract object
  * @returns A boolean value indicating whether the record exists or not
  */
-const recordExists = async (phoneNumber: string, contract: IContract) => {
+const recordExistsFunc = async (phoneNumber: string, contract: IContract) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
 
@@ -89,4 +92,9 @@ const recordExists = async (phoneNumber: string, contract: IContract) => {
   }
 };
 
-export { getRecord, setPhoneRecord, isRecordVerified, recordExists };
+export {
+  getRecordFunc,
+  setPhoneRecordFunc,
+  isRecordVerifiedFunc,
+  recordExistsFunc,
+};
