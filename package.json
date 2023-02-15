@@ -34,7 +34,7 @@
     "trailingComma": "es5"
   },
   "name": "pnsjs",
-  "author": "Njoku Emmanuel",
+  "author": "Justice Eziefule",
   "description": "A Javascript library for interacting with the PNS smart contract",
   "module": "dist/pnsjs.esm.js",
   "size-limit": [

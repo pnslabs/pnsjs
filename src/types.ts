@@ -12,4 +12,9 @@ export type IABI = {
   abi: AbiItem[];
 };
 
+export type IError = {
+  message?: string;
+  errorArgs?: string[];
+};
+
 export type IContract = ethers.Contract;
