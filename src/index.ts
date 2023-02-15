@@ -27,7 +27,7 @@ export class PNS {
     this.provider = provider;
     this.provider
       ?.getNetwork()
-      ?.then(network => {
+      ?.then((network) => {
         if (!acceptedNetworks.includes(network?.chainId)) {
           ErrorMessage(
             `Invalid chainId: ChainID ${network.chainId} is not supported`
@@ -42,7 +42,7 @@ export class PNS {
           );
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
         ErrorMessage('Error connecting to provider');
       });

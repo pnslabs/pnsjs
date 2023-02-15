@@ -21,7 +21,7 @@ export const ErrorMessage = (message?: any) => {
       ? message
       : 'Something went wrong. Please try again later.';
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     resolve(new Error(message?.errorArgs[0] || defaultMsg));
   });
 };
