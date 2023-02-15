@@ -1,6 +1,15 @@
-import {ethers} from "ethers";
+import { ethers } from 'ethers';
+import { AbiItem } from 'web3-utils';
 
+export type IProvider = ethers.providers.Provider;
 
-export type Provider = ethers.providers.Provider;
+export type IChainId = 1 | 5;
 
-export type ChainId = 1 | 3;
+export type IABI = {
+  _format: string;
+  contractName: string;
+  sourceName: string;
+  abi: AbiItem[];
+};
+
+export type IContract = ethers.Contract;

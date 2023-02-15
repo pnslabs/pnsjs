@@ -14,7 +14,7 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
-    "lint": "tsdx lint",
+    "lint": "eslint . --ext .ts",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why"
@@ -24,7 +24,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "tsdx lint"
+      "pre-commit": "eslint . --ext .ts"
     }
   },
   "prettier": {
@@ -57,7 +57,10 @@
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@openzeppelin/contracts": "^4.5.0",
     "@size-limit/preset-small-lib": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
     "dotenv": "^16.0.3",
+    "eslint": "^8.34.0",
     "hardhat": "^2.12.2",
     "husky": "^8.0.2",
     "size-limit": "^8.1.0",

@@ -1,4 +1,5 @@
-import {ethers} from "ethers";
+import { ethers } from 'ethers';
+import { IProvider } from '../types';
 
 /**
  * This is a contract object that is used to interact with the smart contract.
@@ -7,6 +8,11 @@ import {ethers} from "ethers";
  * @param {array} abi - The abi of the contract.
  */
 
-export const Contract = (provider: ethers.providers.Provider, contractAddress: string, abi: Array<any>) => {
-    return new ethers.Contract(contractAddress, abi, provider);
-}
+export const Contract = (
+  provider: IProvider,
+  contractAddress: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  abi: Array<any>
+) => {
+  return new ethers.Contract(contractAddress, abi, provider);
+};
