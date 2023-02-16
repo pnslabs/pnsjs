@@ -10,6 +10,11 @@ import {
   recordExistsFunc,
   setPhoneRecordFunc,
 } from './services';
+import {
+  getOtpFunc,
+  getVerificationRecordFunc,
+  verifyPhoneFunc,
+} from './services/guardian';
 import { IChainId, IContract, IProvider } from './types';
 import { acceptedNetworks, ErrorMessage } from './utils';
 
@@ -27,7 +32,7 @@ export class PNS {
     this.provider = provider;
     this.provider
       ?.getNetwork()
-      ?.then((network) => {
+      ?.then(network => {
         if (!acceptedNetworks.includes(network?.chainId)) {
           ErrorMessage(
             `Invalid chainId: ChainID ${network.chainId} is not supported`
@@ -42,7 +47,7 @@ export class PNS {
           );
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
         ErrorMessage('Error connecting to provider');
       });
@@ -123,7 +128,7 @@ export class PNS {
    * @dev Interacts with the smart contract to resolve a given phone number
    * @param phoneNumber Phone number to resolve
    * @returns An array of resolvers
-   * @example const resolvers = await pns.getResolver('1234567890');
+   * @example const resolvers = await pns.getResolver('+1234567890');
    */
   public async getResolvers(phoneNumber: string) {
     try {
@@ -155,6 +160,56 @@ export class PNS {
         this.contract!
       );
       return tx;
+    } catch (error) {
+      ErrorMessage(error);
+    }
+  }
+
+  /**
+   * @dev Interacts with the guardian Backend to send OTP to phone number
+   * @param phoneNumber Phone number to receive OTP
+   * @param country An optional country code (ISO 3166-1 alpha-2 e.g US)
+   * @returns Result of the request
+   * @example const response = await pns.getOtp('+1234567890', 'US);
+   */
+  public async getOtp(phoneNumber: string, country: string) {
+    try {
+      const response = await getOtpFunc(phoneNumber, country);
+      return response;
+    } catch (error) {
+      ErrorMessage(error);
+    }
+  }
+
+  /**
+   * @dev Interacts with the smart contract to verify phone number
+   * @param phoneNumber Phone number to verify
+   * @param otp 6 digit OTP to verify that user owns the phone number
+   * @returns Transaction response
+   * @example const response = await pns.verifyPhone('+1234567890', '123456');
+   */
+  public async verifyPhone(phoneNumber: string, otp: string) {
+    try {
+      const response = await verifyPhoneFunc(phoneNumber, otp);
+      return response;
+    } catch (error) {
+      ErrorMessage(error);
+    }
+  }
+
+  /**
+   * @dev Interacts with the smart contract to get the verification record of a given phone number
+   * @param phoneNumber Phone number to check record verification record
+   * @returns An object containing the verification record
+   * @example const response = await pns.getVerificationRecord('+1234567890');
+   */
+  public async getVerificationRecord(phoneNumber: string) {
+    try {
+      const response = await getVerificationRecordFunc(
+        phoneNumber,
+        this.contract!
+      );
+      return response;
     } catch (error) {
       ErrorMessage(error);
     }
