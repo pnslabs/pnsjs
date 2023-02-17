@@ -2,6 +2,7 @@
 import { PNSRegistryAbi } from './abi';
 import { core } from './addresses';
 import { Contract } from './libs/contract';
+// import { ethers } from 'ethers';
 import {
   getRecordFunc,
   getResolverFunc,
@@ -20,42 +21,32 @@ import {
   renewRecordFunc,
 } from './services/record';
 import { IChainId, IContract, IProvider, ISigner } from './types';
-import { acceptedNetworks, ErrorMessage } from './utils';
+import { ErrorMessage } from './utils';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
 
 /**
  * @dev The PNS class is used to interact with the PNS smart contract methods
  * @param provider Provider object
+ * @param signer Signer object
+ * @param chainId The connected chain id
  */
 export class PNS {
   protected provider?: IProvider;
-  protected chainId?: IChainId;
   protected contract?: IContract;
   protected signer?: ISigner;
 
-  constructor(provider: IProvider, signer: ISigner) {
+  constructor(provider: IProvider, signer: ISigner, chainId: number) {
     this.provider = provider;
     this.signer = signer;
-    this.provider
-      ?.getNetwork()
-      ?.then(network => {
-        if (!acceptedNetworks.includes(network?.chainId)) {
-          ErrorMessage(
-            `Invalid chainId: ChainID ${network.chainId} is not supported`
-          );
-        } else {
-          const chainId = network.chainId;
-          this.chainId = chainId as IChainId;
-          this.contract = Contract(
-            provider,
-            core[chainId as IChainId].PNSRegistry,
-            PNSRegistryAbi.abi
-          );
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        ErrorMessage('Error connecting to provider');
-      });
+    this.contract = Contract(
+      provider,
+      core[chainId as IChainId].PNSRegistry,
+      PNSRegistryAbi.abi
+    );
+
+    // this.getContract(provider);
   }
 
   /**

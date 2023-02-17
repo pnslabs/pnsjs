@@ -84,16 +84,16 @@ const ErrorMessage = (message?: any) => {
       ? message
       : 'Something went wrong. Please try again later.';
 
-  return new Promise(resolve => {
-    resolve(new Error(message?.errorArgs[0] || defaultMsg));
-  });
+  const systemMessage = message?.errorArgs && message?.errorArgs[0];
+
+  return new Error(systemMessage || defaultMsg);
 };
 
 /**
  * @dev An array of accepted networks for the PNS protocol
  * @returns The an array of accepted networks
  */
-const acceptedNetworks = [1, 5];
+const acceptedNetworks = [1, 5, 1337, 97];
 
 /**
  * @dev Parse ether to wei

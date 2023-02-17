@@ -17,10 +17,12 @@ import { getRegistryCostInETH } from '../utils';
 const getRecordFunc = async (phoneNumber: string, contract: IContract) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
-    const phoneRecord = await contract.method.getRecord(hash);
+    const phoneRecord = await contract.getRecord(hash);
     return phoneRecord;
   } catch (error) {
-    ErrorMessage(error);
+    const message = await ErrorMessage(error);
+    return message;
+    return ErrorMessage(error);
   }
 };
 

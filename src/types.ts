@@ -3,7 +3,7 @@ import { AbiItem } from 'web3-utils';
 
 export type IProvider = ethers.providers.Provider;
 
-export type IChainId = 1 | 5;
+export type IChainId = 1 | 5 | 1337 | 97;
 
 export type IABI = {
   _format: string;
