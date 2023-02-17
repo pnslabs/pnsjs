@@ -1,6 +1,6 @@
 import { IContract } from '../types';
 import { ErrorMessage, hashPhoneNumber, parseEther } from '../utils';
-import { getRegistryCostInETH } from './libs';
+import { getRegistryCostInETH } from '../utils';
 
 /**
  * @dev Interacts with the smart contract to get the record information of a given phone number

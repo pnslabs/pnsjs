@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { IContract } from '../types';
+import { IContract, ISigner } from '../types';
 import { ErrorMessage, hashPhoneNumber } from '../utils';
 
 /**
@@ -33,7 +33,11 @@ const getOtpFunc = async (phoneNumber: string, country: string) => {
  * @param otp OTP to verify that user owns the phone number
  */
 
-const verifyPhoneFunc = async (phoneNumber: string, otp: string) => {
+const verifyPhoneFunc = async (
+  phoneNumber: string,
+  otp: string,
+  signer: ISigner
+) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
     const message = ethers.utils.solidityPack(
@@ -41,13 +45,9 @@ const verifyPhoneFunc = async (phoneNumber: string, otp: string) => {
       [hash, otp]
     );
     const hashedMessage = ethers.utils.keccak256(message);
-    // const signer = await ethers.provider.getSigner();
-    // const signature = await signer!.signMessage(
-    //   ethers.utils.arrayify(hashedMessage)
-    // );
-
-    // to revisit later
-    const signature = '';
+    const signature = await signer.signMessage(
+      ethers.utils.arrayify(hashedMessage)
+    );
 
     const response = await fetch(`${process.env.SERVER_URL}/signature/verify`, {
       method: 'POST',
