@@ -15,7 +15,7 @@ import {
   getVerificationRecordFunc,
   verifyPhoneFunc,
 } from './services/guardian';
-import { IChainId, IContract, IProvider } from './types';
+import { IChainId, IContract, IProvider, ISigner } from './types';
 import { acceptedNetworks, ErrorMessage } from './utils';
 
 /**
@@ -26,10 +26,11 @@ export class PNS {
   protected provider?: IProvider;
   protected chainId?: IChainId;
   protected contract?: IContract;
-  protected userAddress?: string;
+  protected signer?: ISigner;
 
-  constructor(provider: IProvider) {
+  constructor(provider: IProvider, signer: ISigner) {
     this.provider = provider;
+    this.signer = signer;
     this.provider
       ?.getNetwork()
       ?.then(network => {
@@ -190,7 +191,7 @@ export class PNS {
    */
   public async verifyPhone(phoneNumber: string, otp: string) {
     try {
-      const response = await verifyPhoneFunc(phoneNumber, otp);
+      const response = await verifyPhoneFunc(phoneNumber, otp, this.signer);
       return response;
     } catch (error) {
       ErrorMessage(error);
