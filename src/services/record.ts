@@ -1,5 +1,10 @@
 import { IContract } from '../types';
-import { ErrorMessage, hashPhoneNumber, parseEther } from '../utils';
+import {
+  ErrorMessage,
+  getRegistryRenewCostInETH,
+  hashPhoneNumber,
+  parseEther,
+} from '../utils';
 import { getRegistryCostInETH } from '../utils';
 
 /**
@@ -38,6 +43,62 @@ const setPhoneRecordFunc = async (
     const hash = hashPhoneNumber(phoneNumber);
 
     const txResponse = await contract.method.setPhoneRecord(
+      hash,
+      signer,
+      label,
+      {
+        value: parseEther(registryCost),
+      }
+    );
+    await txResponse.wait();
+
+    return txResponse;
+  } catch (error) {
+    ErrorMessage(error);
+  }
+};
+
+/**
+ * @dev Interacts with the smart contract to renew a given phone record
+ * @param phoneNumber Phone number of the record to renew
+ * @param contract Contract object
+ * @returns The transaction response
+ */
+const renewRecordFunc = async (phoneNumber: string, contract: IContract) => {
+  try {
+    const renewCost = await getRegistryRenewCostInETH(contract);
+    const hash = hashPhoneNumber(phoneNumber);
+
+    const txResponse = await contract.method.renew(hash, {
+      value: parseEther(renewCost),
+    });
+    await txResponse.wait();
+
+    return txResponse;
+  } catch (error) {
+    ErrorMessage(error);
+  }
+};
+
+/**
+ * @dev Interacts with the smart contract to claim an expired phone record
+ * @param phoneNumber Phone number of the record to claim
+ * @param signer Signer address
+ * @param label Ceypro label
+ * @param contract Contract object
+ * @returns The transaction response
+ */
+const claimExpiredPhoneRecordFunc = async (
+  phoneNumber: string,
+  signer: string,
+  label: string,
+  contract: IContract
+) => {
+  try {
+    const registryCost = await getRegistryCostInETH(contract);
+    const hash = hashPhoneNumber(phoneNumber);
+
+    const txResponse = await contract.method.claimExpiredPhoneRecord(
       hash,
       signer,
       label,
@@ -97,4 +158,6 @@ export {
   setPhoneRecordFunc,
   isRecordVerifiedFunc,
   recordExistsFunc,
+  renewRecordFunc,
+  claimExpiredPhoneRecordFunc,
 };

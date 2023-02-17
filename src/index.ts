@@ -15,6 +15,10 @@ import {
   getVerificationRecordFunc,
   verifyPhoneFunc,
 } from './services/guardian';
+import {
+  claimExpiredPhoneRecordFunc,
+  renewRecordFunc,
+} from './services/record';
 import { IChainId, IContract, IProvider, ISigner } from './types';
 import { acceptedNetworks, ErrorMessage } from './utils';
 
@@ -84,6 +88,47 @@ export class PNS {
   ) {
     try {
       const tx = await setPhoneRecordFunc(
+        phoneNumber,
+        signer,
+        label,
+        this.contract!
+      );
+      return tx;
+    } catch (error) {
+      ErrorMessage(error);
+    }
+  }
+
+  /**
+   * @dev Interacts with the smart contract to renew a given phone record
+   * @param phoneNumber Phone number of the record to renew
+   * @returns The transaction response
+   * @example const record = await pns.renewRecord('+1234567890');
+   */
+  public async renewRecord(phoneNumber: string) {
+    try {
+      const tx = await renewRecordFunc(phoneNumber, this.contract!);
+      return tx;
+    } catch (error) {
+      ErrorMessage(error);
+    }
+  }
+
+  /**
+   * @dev Interacts with the smart contract to claim an expired phone record
+   * @param phoneNumber Phone number of the record to claim
+   * @param signer Signer address
+   * @param label Ceypro label
+   * @returns The transaction response
+   * @example const record = await pns.claimExpiredPhoneRecord('+1234567890', '0x1234567890', 'ETH');
+   */
+  public async claimExpiredPhoneRecord(
+    phoneNumber: string,
+    signer: string,
+    label: string
+  ) {
+    try {
+      const tx = await claimExpiredPhoneRecordFunc(
         phoneNumber,
         signer,
         label,
