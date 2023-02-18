@@ -20,3 +20,5 @@ export type IError = {
 export type IContract = ethers.Contract;
 
 export type ISigner = ethers.Signer;
+
+export type IContractFactory = ethers.ContractFactory;

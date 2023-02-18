@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { PNSRegistryAbi } from './abi';
+import { PnsRegistryAbi } from './abi';
 import { core } from './addresses';
 import { Contract } from './libs/contract';
 // import { ethers } from 'ethers';
@@ -43,7 +43,7 @@ export class PNS {
     this.contract = Contract(
       provider,
       core[chainId as IChainId].PNSRegistry,
-      PNSRegistryAbi.abi
+      PnsRegistryAbi.abi
     );
 
     // this.getContract(provider);

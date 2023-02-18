@@ -8,7 +8,7 @@ import { IContract } from '../types';
  */
 const getRegistryCostInUSD = async (contract: IContract) => {
   try {
-    const registryCost = await contract.method.registryCostInUSD();
+    const registryCost = await contract.registryCostInUSD();
     return registryCost;
   } catch (error) {
     ErrorMessage(error);
@@ -23,7 +23,7 @@ const getRegistryCostInUSD = async (contract: IContract) => {
 const getRegistryCostInETH = async (contract: IContract) => {
   try {
     const registryCostInUsd = await getRegistryCostInUSD(contract);
-    const registryCostInEth = await contract.method.convertUSDToETH(
+    const registryCostInEth = await contract.convertUSDToETH(
       registryCostInUsd.toString()
     );
     return registryCostInEth;
@@ -39,7 +39,7 @@ const getRegistryCostInETH = async (contract: IContract) => {
  */
 const getRegistryRenewCostInUSD = async (contract: IContract) => {
   try {
-    const registryRenewCost = await contract.method.registryRenewCostInUSD();
+    const registryRenewCost = await contract.registryRenewCostInUSD();
     return registryRenewCost;
   } catch (error) {
     ErrorMessage(error);
@@ -54,7 +54,7 @@ const getRegistryRenewCostInUSD = async (contract: IContract) => {
 const getRegistryRenewCostInETH = async (contract: IContract) => {
   try {
     const registryRenewCostInUsd = await getRegistryRenewCostInUSD(contract);
-    const registryRenewCostInEth = await contract.method.convertUSDToETH(
+    const registryRenewCostInEth = await contract.convertUSDToETH(
       registryRenewCostInUsd.toString()
     );
     return registryRenewCostInEth;

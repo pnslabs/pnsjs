@@ -22,7 +22,6 @@ const getRecordFunc = async (phoneNumber: string, contract: IContract) => {
   } catch (error) {
     const message = await ErrorMessage(error);
     return message;
-    return ErrorMessage(error);
   }
 };
 
@@ -44,14 +43,9 @@ const setPhoneRecordFunc = async (
     const registryCost = await getRegistryCostInETH(contract);
     const hash = hashPhoneNumber(phoneNumber);
 
-    const txResponse = await contract.method.setPhoneRecord(
-      hash,
-      signer,
-      label,
-      {
-        value: parseEther(registryCost),
-      }
-    );
+    const txResponse = await contract.setPhoneRecord(hash, signer, label, {
+      value: parseEther(registryCost),
+    });
     await txResponse.wait();
 
     return txResponse;
@@ -71,7 +65,7 @@ const renewRecordFunc = async (phoneNumber: string, contract: IContract) => {
     const renewCost = await getRegistryRenewCostInETH(contract);
     const hash = hashPhoneNumber(phoneNumber);
 
-    const txResponse = await contract.method.renew(hash, {
+    const txResponse = await contract.renew(hash, {
       value: parseEther(renewCost),
     });
     await txResponse.wait();
@@ -100,7 +94,7 @@ const claimExpiredPhoneRecordFunc = async (
     const registryCost = await getRegistryCostInETH(contract);
     const hash = hashPhoneNumber(phoneNumber);
 
-    const txResponse = await contract.method.claimExpiredPhoneRecord(
+    const txResponse = await contract.claimExpiredPhoneRecord(
       hash,
       signer,
       label,
@@ -129,7 +123,7 @@ const isRecordVerifiedFunc = async (
   try {
     const hash = hashPhoneNumber(phoneNumber);
 
-    const status = await contract.method.isRecordVerified(hash);
+    const status = await contract.isRecordVerified(hash);
 
     return status;
   } catch (error) {
@@ -147,7 +141,7 @@ const recordExistsFunc = async (phoneNumber: string, contract: IContract) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
 
-    const status = await contract.method.recordExists(hash);
+    const status = await contract.recordExists(hash);
 
     return status;
   } catch (error) {

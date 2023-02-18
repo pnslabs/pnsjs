@@ -81,7 +81,7 @@ const getVerificationRecordFunc = async (
   try {
     const hash = hashPhoneNumber(phoneNumber);
 
-    const record = await contract.method.getVerificationRecord(hash);
+    const record = await contract.getVerificationRecord(hash);
 
     return record;
   } catch (error) {
