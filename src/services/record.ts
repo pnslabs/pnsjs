@@ -29,7 +29,7 @@ const getRecordFunc = async (phoneNumber: string, contract: IContract) => {
  * @dev Interacts with the smart contract to create & set the record information of a given phone number
  * @param phoneNumber Phone number to resolve
  * @param signer Signer address
- * @param label Ceypro label
+ * @param label Crypro label
  * @param contract Contract object
  * @returns The transaction response
  */
@@ -45,12 +45,14 @@ const setPhoneRecordFunc = async (
 
     const txResponse = await contract.setPhoneRecord(hash, signer, label, {
       value: ethToWei(registryCost),
+      from: signer,
     });
     await txResponse.wait();
 
     return txResponse;
   } catch (error) {
-    ErrorMessage(error);
+    const message = await ErrorMessage(error);
+    return message;
   }
 };
 

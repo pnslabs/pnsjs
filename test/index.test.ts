@@ -24,6 +24,8 @@ describe('Justice uses the PNS library', () => {
   const ethPrice = '1779400000000';
   const registryCost = ethToWei(10); // 10 usd
   const registryRenewCost = ethToWei(5); // 5 usd
+  let signerAddress: string;
+  const label = 'ETH';
 
   beforeAll(async () => {
     provider = await new ethers.providers.JsonRpcProvider(rpc);
@@ -33,7 +35,7 @@ describe('Justice uses the PNS library', () => {
     );
     const network = await provider.getNetwork();
 
-    const signerAddress = await signer.getAddress();
+    signerAddress = await signer.getAddress();
 
     // Deploy the guardian contract
     const guardian: IContractFactory = new ContractFactory(
@@ -87,14 +89,23 @@ describe('Justice uses the PNS library', () => {
 
   it('Justice calls the getRecord method but got back a response; phone record not found', async () => {
     const record = await pns.getRecord(phoneNumber);
-    const expectedError = 'phone record not found';
+    const expectedError =
+      'Error: VM Exception while processing transaction: revert phone record not found';
 
-    expect(record.toString()).toContain(expectedError);
+    expect(record.toString()).toBe(expectedError);
   });
 
   it('Justice calls the recordExists method to be certain whether or not the record exists', async () => {
     const exists = await pns.recordExists(phoneNumber);
 
     expect(exists).toBe(false);
+  });
+
+  it('Justice attemps to set a phone record but gets an error b/cos the phone number is not verified', async () => {
+    const record = await pns.setPhoneRecord(phoneNumber, signerAddress, label);
+    const expectedError =
+      'Error: VM Exception while processing transaction: revert phone record is not verified';
+
+    expect(record.toString()).toBe(expectedError);
   });
 });

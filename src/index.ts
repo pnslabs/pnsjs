@@ -45,9 +45,7 @@ export class PNS {
   ) {
     this.provider = provider;
     this.signer = signer;
-    this.contract = Contract(provider, registryAddress, PnsRegistryAbi.abi);
-
-    // this.getContract(provider);
+    this.contract = Contract(registryAddress, PnsRegistryAbi.abi, signer);
   }
 
   /**

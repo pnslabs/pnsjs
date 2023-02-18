@@ -84,11 +84,21 @@ const ErrorMessage = (message?: any) => {
       ? message
       : 'Something went wrong. Please try again later.';
 
-  const contractErrorMessage = JSON.parse(message?.error?.body)?.error?.message;
+  const contractErrorMessage =
+    message?.error?.body && JSON.parse(message?.error?.body)?.error?.message;
 
   const systemMessage = message?.errorArgs && message?.errorArgs[0];
 
-  return new Error(contractErrorMessage || systemMessage || defaultMsg);
+  const contractRevertErrorMessage =
+    message?.error?.error?.body &&
+    JSON.parse(message?.error?.error?.body)?.error?.message;
+
+  return new Error(
+    contractErrorMessage ||
+      contractRevertErrorMessage ||
+      systemMessage ||
+      defaultMsg
+  );
 };
 
 /**
