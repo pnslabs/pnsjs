@@ -1,12 +1,15 @@
 import { ethers, ContractFactory } from 'ethers';
 import {
+  DummyPriceOracleAbi,
   // DummyPriceOracleAbi,
   PnsGuardianAbi,
+  PnsRegistryAbi,
   // PnsRegistryAbi,
 } from '../src/abi';
 // import { core } from '../src/addresses';
 import PNS from '../src/index';
 import { IContractFactory, IProvider, ISigner } from '../src/types';
+import { ethToWei } from '../src/utils';
 
 const rpc = process.env.LOCAL_RPC;
 
@@ -14,11 +17,13 @@ describe('Justice uses the PNS library', () => {
   const privateKey = process.env.PRIVATE_KEY;
   let pns: PNS;
   let provider: IProvider;
-  // const phoneNumber = '+1234567890';
+  const phoneNumber = '+1234567890';
   let guardianAddress: string;
-  // let registryAddress: string;
+  let registryAddress: string;
   let priceOracleAddress: string;
-  // const ethPrice = '1779400000000';
+  const ethPrice = '1779400000000';
+  const registryCost = ethToWei(10); // 10 usd
+  const registryRenewCost = ethToWei(5); // 5 usd
 
   beforeAll(async () => {
     provider = await new ethers.providers.JsonRpcProvider(rpc);
@@ -37,59 +42,59 @@ describe('Justice uses the PNS library', () => {
       signer
     );
 
-    const guardianTx = await guardian.deploy(`${signerAddress}`);
+    const guardianTx = await guardian.deploy();
     await guardianTx.deployed();
+    await guardianTx.initialize(signerAddress);
     guardianAddress = guardianTx.address;
 
     // Deploy the dummy price oracle contract
-    // const priceOracle: IContractFactory = new ContractFactory(
-    //   DummyPriceOracleAbi.abi,
-    //   DummyPriceOracleAbi.bytecode,
-    //   signer
-    // );
+    const priceOracle: IContractFactory = new ContractFactory(
+      DummyPriceOracleAbi.abi,
+      DummyPriceOracleAbi.bytecode,
+      signer
+    );
 
-    // const priceOracleTx = await priceOracle.deploy(ethPrice);
-    // priceOracleAddress = priceOracleTx.address;
+    const priceOracleTx = await priceOracle.deploy(ethPrice);
+    await priceOracleTx.deployed();
+    priceOracleAddress = priceOracleTx.address;
 
     // Deploy the registry contract
-    // const registry: IContractFactory = new ContractFactory(
-    //   PnsRegistryAbi.abi,
-    //   PnsRegistryAbi.bytecode,
-    //   signer
-    // );
+    const registry: IContractFactory = new ContractFactory(
+      PnsRegistryAbi.abi,
+      PnsRegistryAbi.bytecode,
+      signer
+    );
 
-    // const registryTx = await registry.deploy([
-    //   guardianAddress,
-    //   priceOracleAddress,
-    //   signerAddress,
-    // ]);
-    // registryAddress = registryTx.address;
-
-    console.log(
-      '::::::::::::::',
+    const registryTx = await registry.deploy();
+    await registryTx.deployed();
+    await registryTx.initialize(
       guardianAddress,
       priceOracleAddress,
       signerAddress
     );
+    registryAddress = registryTx.address;
+    // Set the registry cost
+    await registryTx.setRegistryCost(registryCost);
+    // Set the registry renew cost
+    await registryTx.setRegistryRenewCost(registryRenewCost);
 
-    pns = await new PNS(provider, signer, network.chainId);
-    pns;
+    pns = await new PNS(provider, signer, network.chainId, registryAddress);
   });
 
   it('Justice successfully initializes the PNS class', async () => {
-    // expect(pns).toBeDefined();
+    expect(pns).toBeDefined();
   });
 
-  // it('Justice calls the getRecord method but got back a response; phone record not found', async () => {
-  //   const record = await pns.getRecord(phoneNumber);
-  //   const expectedError = 'phone record not found';
+  it('Justice calls the getRecord method but got back a response; phone record not found', async () => {
+    const record = await pns.getRecord(phoneNumber);
+    const expectedError = 'phone record not found';
 
-  //   expect(record.toString()).toContain(expectedError);
-  // });
+    expect(record.toString()).toContain(expectedError);
+  });
 
-  // it('Justice calls the recordExists method to be certain whether or not the record exists', async () => {
-  //   const exists = await pns.recordExists(phoneNumber);
+  it('Justice calls the recordExists method to be certain whether or not the record exists', async () => {
+    const exists = await pns.recordExists(phoneNumber);
 
-  //   expect(exists).toBe(false);
-  // });
+    expect(exists).toBe(false);
+  });
 });

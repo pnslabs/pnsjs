@@ -3,7 +3,7 @@ import {
   ErrorMessage,
   getRegistryRenewCostInETH,
   hashPhoneNumber,
-  parseEther,
+  ethToWei,
 } from '../utils';
 import { getRegistryCostInETH } from '../utils';
 
@@ -44,7 +44,7 @@ const setPhoneRecordFunc = async (
     const hash = hashPhoneNumber(phoneNumber);
 
     const txResponse = await contract.setPhoneRecord(hash, signer, label, {
-      value: parseEther(registryCost),
+      value: ethToWei(registryCost),
     });
     await txResponse.wait();
 
@@ -66,7 +66,7 @@ const renewRecordFunc = async (phoneNumber: string, contract: IContract) => {
     const hash = hashPhoneNumber(phoneNumber);
 
     const txResponse = await contract.renew(hash, {
-      value: parseEther(renewCost),
+      value: ethToWei(renewCost),
     });
     await txResponse.wait();
 
@@ -99,7 +99,7 @@ const claimExpiredPhoneRecordFunc = async (
       signer,
       label,
       {
-        value: parseEther(registryCost),
+        value: ethToWei(registryCost),
       }
     );
     await txResponse.wait();

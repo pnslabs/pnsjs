@@ -37,14 +37,15 @@ export class PNS {
   protected contract?: IContract;
   protected signer?: ISigner;
 
-  constructor(provider: IProvider, signer: ISigner, chainId: number) {
+  constructor(
+    provider: IProvider,
+    signer: ISigner,
+    chainId: number,
+    registryAddress: string = core[chainId as IChainId].PNSRegistry
+  ) {
     this.provider = provider;
     this.signer = signer;
-    this.contract = Contract(
-      provider,
-      core[chainId as IChainId].PNSRegistry,
-      PnsRegistryAbi.abi
-    );
+    this.contract = Contract(provider, registryAddress, PnsRegistryAbi.abi);
 
     // this.getContract(provider);
   }

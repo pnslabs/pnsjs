@@ -84,9 +84,11 @@ const ErrorMessage = (message?: any) => {
       ? message
       : 'Something went wrong. Please try again later.';
 
+  const contractErrorMessage = JSON.parse(message?.error?.body)?.error?.message;
+
   const systemMessage = message?.errorArgs && message?.errorArgs[0];
 
-  return new Error(systemMessage || defaultMsg);
+  return new Error(contractErrorMessage || systemMessage || defaultMsg);
 };
 
 /**
@@ -98,16 +100,27 @@ const acceptedNetworks = [1, 5, 1337, 97];
 /**
  * @dev Parse ether to wei
  * @param amount Amount of ether to parse
+ * @returns The amount in ether
+ */
+const ethToWei = (amount: BigNumber | number) => {
+  const balance = amount.toString();
+  return ethers.utils.parseEther(balance);
+};
+
+/**
+ * @dev Parse wei to ether
+ * @param amount Amount of wei to parse
  * @returns The amount in wei
  */
-const parseEther = (amount: BigNumber) => {
-  return ethers.utils.parseEther(amount.toString());
+const weiToEth = (amount: BigNumber) => {
+  return ethers.utils.formatEther(amount);
 };
 
 export {
   ErrorMessage,
   hashPhoneNumber,
-  parseEther,
+  ethToWei,
+  weiToEth,
   acceptedNetworks,
   getRegistryCostInETH,
   getRegistryCostInUSD,
