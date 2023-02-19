@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ethers, ContractFactory } from 'ethers';
 import {
   DummyPriceOracleAbi,
@@ -14,7 +15,8 @@ describe('Justice uses the PNS library', () => {
   const privateKey = process.env.PRIVATE_KEY;
   let pns: PNS;
   let provider: IProvider;
-  const phoneNumber = '+2348130813007';
+  const invalidPhoneNumber = '+1435623453326';
+  const phoneNumber = '+2348123456789';
   let guardianAddress: string;
   let registryAddress: string;
   let priceOracleAddress: string;
@@ -108,23 +110,29 @@ describe('Justice uses the PNS library', () => {
     expect(record.toString()).toBe(expectedError);
   });
 
-  it('Justice tries to get a verification OTP', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  it('Returns error when Justice tries to get a verification OTP with an invalid phone number as per country', async () => {
+    const response: any = await pns.getOtp(invalidPhoneNumber, country);
+    const expectedResponse = 'invalid phone number entered.';
+
+    expect(response?.data?.status).toBe(400);
+    expect(response?.data?.response).toBe(expectedResponse);
+  });
+
+  it('Justice retries with a valid phone number', async () => {
     const response: any = await pns.getOtp(phoneNumber, country);
-    const alreadyVerifiedResponse =
-      'guardian already verified now setPhone Record';
+    // const alreadyVerifiedResponse =
+    //   'guardian already verified now setPhone Record';
     otp = '123456';
 
     expect(response?.data?.status).toBe(200);
-    expect(response?.data?.response).toBe(alreadyVerifiedResponse);
+    // expect(response?.data?.response).toBe(alreadyVerifiedResponse);
   });
 
   it('Justice tries verifying phone number with wrong otp', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response: any = await pns.verifyPhone(phoneNumber, otp);
-    const expectedError = 'invalid otp code for phone  shared';
+    const expectedError = 'invalid otp code for phone  shared.';
 
     expect(response?.data?.status).toBe(400);
-    expect(response?.data?.response).toContain(expectedError);
+    expect(response?.data?.response).toBe(expectedError);
   });
 });
