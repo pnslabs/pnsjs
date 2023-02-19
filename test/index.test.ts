@@ -1,12 +1,9 @@
 import { ethers, ContractFactory } from 'ethers';
 import {
   DummyPriceOracleAbi,
-  // DummyPriceOracleAbi,
   PnsGuardianAbi,
   PnsRegistryAbi,
-  // PnsRegistryAbi,
 } from '../src/abi';
-// import { core } from '../src/addresses';
 import PNS from '../src/index';
 import { IContractFactory, IProvider, ISigner } from '../src/types';
 import { ethToWei } from '../src/utils';
@@ -17,7 +14,7 @@ describe('Justice uses the PNS library', () => {
   const privateKey = process.env.PRIVATE_KEY;
   let pns: PNS;
   let provider: IProvider;
-  const phoneNumber = '+1234567890';
+  const phoneNumber = '+2348130813007';
   let guardianAddress: string;
   let registryAddress: string;
   let priceOracleAddress: string;
@@ -26,6 +23,8 @@ describe('Justice uses the PNS library', () => {
   const registryRenewCost = ethToWei(5); // 5 usd
   let signerAddress: string;
   const label = 'ETH';
+  const country = 'NG';
+  let otp = '123456';
 
   beforeAll(async () => {
     provider = await new ethers.providers.JsonRpcProvider(rpc);
@@ -107,5 +106,25 @@ describe('Justice uses the PNS library', () => {
       'Error: VM Exception while processing transaction: revert phone record is not verified';
 
     expect(record.toString()).toBe(expectedError);
+  });
+
+  it('Justice tries to get a verification OTP', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response: any = await pns.getOtp(phoneNumber, country);
+    const alreadyVerifiedResponse =
+      'guardian already verified now setPhone Record';
+    otp = '123456';
+
+    expect(response?.data?.status).toBe(200);
+    expect(response?.data?.response).toBe(alreadyVerifiedResponse);
+  });
+
+  it('Justice tries verifying phone number with wrong otp', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response: any = await pns.verifyPhone(phoneNumber, otp);
+    const expectedError = 'invalid otp code for phone  shared';
+
+    expect(response?.data?.status).toBe(400);
+    expect(response?.data?.response).toContain(expectedError);
   });
 });
