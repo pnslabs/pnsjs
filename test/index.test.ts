@@ -18,7 +18,6 @@ describe('Justice uses the PNS library', () => {
   const invalidPhoneNumber = '+1435623453326';
   const phoneNumber = '+2348130813004';
   let guardianAddress: string;
-  const registryAddress = '0x37A5c3b11B6e49f1832473FcEBeD2a455253F0A3';
   let priceOracleAddress: string;
   const ethPrice = '1779400000000';
   const registryCost = ethToWei(10); // 10 usd
@@ -80,7 +79,7 @@ describe('Justice uses the PNS library', () => {
     // Set the registry renew cost
     await registryTx.setRegistryRenewCost(registryRenewCost);
 
-    pns = await new PNS(signer, registryAddress);
+    pns = await new PNS(signer);
     contract = await pns.initialize();
   });
 
