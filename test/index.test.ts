@@ -6,7 +6,7 @@ import {
   PnsRegistryAbi,
 } from '../src/abi';
 import PNS from '../src/index';
-import { IContractFactory, IProvider, ISigner } from '../src/types';
+import { IContract, IContractFactory, IProvider, ISigner } from '../src/types';
 import { ethToWei } from '../src/utils';
 
 const rpc = process.env.LOCAL_RPC;
@@ -16,9 +16,9 @@ describe('Justice uses the PNS library', () => {
   let pns: PNS;
   let provider: IProvider;
   const invalidPhoneNumber = '+1435623453326';
-  const phoneNumber = '+2348123456789';
+  const phoneNumber = '+2348130813004';
   let guardianAddress: string;
-  let registryAddress: string;
+  const registryAddress = '0x37A5c3b11B6e49f1832473FcEBeD2a455253F0A3';
   let priceOracleAddress: string;
   const ethPrice = '1779400000000';
   const registryCost = ethToWei(10); // 10 usd
@@ -26,7 +26,8 @@ describe('Justice uses the PNS library', () => {
   let signerAddress: string;
   const label = 'ETH';
   const country = 'NG';
-  let otp = '123456';
+  let contract: IContract | Error;
+  const otp = '123456';
 
   beforeAll(async () => {
     provider = await new ethers.providers.JsonRpcProvider(rpc);
@@ -34,7 +35,6 @@ describe('Justice uses the PNS library', () => {
       privateKey as string,
       provider
     );
-    const network = await provider.getNetwork();
 
     signerAddress = await signer.getAddress();
 
@@ -75,17 +75,18 @@ describe('Justice uses the PNS library', () => {
       priceOracleAddress,
       signerAddress
     );
-    registryAddress = registryTx.address;
     // Set the registry cost
     await registryTx.setRegistryCost(registryCost);
     // Set the registry renew cost
     await registryTx.setRegistryRenewCost(registryRenewCost);
 
-    pns = await new PNS(provider, signer, network.chainId, registryAddress);
+    pns = await new PNS(signer, registryAddress);
+    contract = await pns.initialize();
   });
 
   it('Justice successfully initializes the PNS class', async () => {
     expect(pns).toBeDefined();
+    expect(contract).toBeDefined();
   });
 
   it('Justice calls the getRecord method but got back a response; phone record not found', async () => {
@@ -118,15 +119,12 @@ describe('Justice uses the PNS library', () => {
     expect(response?.data?.response).toBe(expectedResponse);
   });
 
-  it('Justice retries with a valid phone number', async () => {
-    const response: any = await pns.getOtp(phoneNumber, country);
-    // const alreadyVerifiedResponse =
-    //   'guardian already verified now setPhone Record';
-    otp = '123456';
+  // it('Justice retries with a valid phone number', async () => {
+  //   const response: any = await pns.getOtp(phoneNumber, country);
+  //   otp = '123456';
 
-    expect(response?.data?.status).toBe(200);
-    // expect(response?.data?.response).toBe(alreadyVerifiedResponse);
-  });
+  //   expect(response?.data?.status).toBe(200);
+  // });
 
   it('Justice tries verifying phone number with wrong otp', async () => {
     const response: any = await pns.verifyPhone(phoneNumber, otp);

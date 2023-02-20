@@ -20,7 +20,8 @@ import {
   claimExpiredPhoneRecordFunc,
   renewRecordFunc,
 } from './services/record';
-import { IChainId, IContract, IProvider, ISigner } from './types';
+import { IContract, IProvider, ISigner, IChainId } from './types';
+import { ErrorMessage } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -33,18 +34,32 @@ require('dotenv').config();
  */
 export class PNS {
   protected provider?: IProvider;
-  protected contract?: IContract;
+  private contract?: IContract;
   protected signer?: ISigner;
+  protected registryAddress?: string;
 
-  constructor(
-    provider: IProvider,
-    signer: ISigner,
-    chainId: number,
-    registryAddress: string = core[chainId as IChainId].PNSRegistry
-  ) {
-    this.provider = provider;
+  constructor(signer: ISigner, registryAddress?: string) {
+    this.provider = signer.provider;
     this.signer = signer;
-    this.contract = Contract(registryAddress, PnsRegistryAbi.abi, signer);
+    this.registryAddress = registryAddress || '';
+  }
+
+  /**
+   * @dev Initialize the contract object
+   * @returns The contract object
+   * @example pns.initialize();
+   */
+  public async initialize() {
+    try {
+      const chainId = await this.signer.getChainId();
+      const address =
+        this.registryAddress || core[chainId as IChainId].PNSRegistry;
+
+      this.contract = Contract(address, PnsRegistryAbi.abi, this.signer);
+      return this.contract;
+    } catch (error) {
+      return ErrorMessage(error);
+    }
   }
 
   /**
