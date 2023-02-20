@@ -19,7 +19,7 @@ import {
 import {
   claimExpiredPhoneRecordFunc,
   renewRecordFunc,
-} from './services/record';
+} from './services/registry';
 import { IChainId, IContract, IProvider, ISigner } from './types';
 import { ErrorMessage } from './utils';
 
