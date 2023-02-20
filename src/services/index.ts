@@ -4,7 +4,7 @@ import {
   isRecordVerifiedFunc,
   recordExistsFunc,
   setPhoneRecordFunc,
-} from './record';
+} from './registry';
 
 export {
   getResolverFunc,
