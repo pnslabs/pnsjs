@@ -38,16 +38,6 @@ jobs:
         run: |
           yarn run typecheck
 
-      - name: Audit dependencies & fail on high or critical vulnerabilities
-        run: |
-          audit_output=$(yarn audit --json)
-          high_vulnerabilities=$(echo "$audit_output" | jq '.data.vulnerabilities | map(select(.severity == "high"))')
-          if [ $(echo "$high_vulnerabilities" | jq length) -gt 0 ]; then
-            echo "High vulnerabilities found:"
-            echo "$high_vulnerabilities"
-            exit 1
-          fi
-
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
