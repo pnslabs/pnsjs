@@ -3,9 +3,9 @@ name: Check size limit
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   check_size_limit:
