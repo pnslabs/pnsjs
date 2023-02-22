@@ -19,9 +19,11 @@ To create a new PNS instance, you have to pass it in the PNS constructor.
 import { PNS } from '@pnslabs/pnsjs';
 import { ethers } from 'ethers';
 
-let providerUrl = 'https://mainnet.infura.io/v3/your-api-key';
+let rpcUrl = 'https://mainnet.infura.io/v3/your-api-key';
 
-const provider = new ethers.providers.JsonRpcProvider(providerUrl);
+const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
-const PNSInstance = new PNS(provider);
+const signer = provider.getSigner()
+
+const PNSInstance = new PNS(signer);
 ```
