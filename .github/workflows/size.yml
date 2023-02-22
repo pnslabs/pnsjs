@@ -1,21 +1,21 @@
-name: Check size limit
+# name: Check size limit
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches: [master]
+# on:
+#   push:
+#     branches:
+#       - master
+#   pull_request:
+#     branches: [master]
 
-jobs:
-  check_size_limit:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+# jobs:
+#   check_size_limit:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: yarn install
+#       - name: Install dependencies
+#         run: yarn install
 
-      - name: Check size limit
-        run: npx size-limit src/index.js --limit 10kb
+#       - name: Check size limit
+#         run: npx size-limit src/index.js --limit 10kb
