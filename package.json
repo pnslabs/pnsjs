@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "rimraf dist && tsc && rollup -c rollup.config.js",
+    "build": "tsc --outDir dist/lib --declarationDir dist/types --declaration true && rollup -c",
     "test": "tsdx test",
     "lint": "eslint . --ext .ts",
     "prepare": "tsdx build",
