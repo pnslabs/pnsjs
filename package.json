@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsc --outDir dist/lib --declarationDir dist/types --declaration true && rollup -c",
+    "build": "tsdx build",
     "test": "tsdx test",
     "lint": "eslint . --ext .ts",
     "prepare": "tsdx build",
