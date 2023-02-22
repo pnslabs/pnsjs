@@ -7,7 +7,11 @@
     "dist",
     "src"
   ],
-  "type": "module",
+  "jest": {
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
+  },
   "engines": {
     "node": ">=10"
   },
@@ -19,7 +23,9 @@
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why",
-    "prettify": "npx prettier '**/*.{json,sol,md,ts}' --write"
+    "prettify": "npx prettier '**/*.{json,sol,md,ts}' --write",
+    "typecheck": "tsc --noEmit",
+    "audit": "yarn audit"
   },
   "peerDependencies": {
     "ethers": "*"
@@ -29,15 +35,9 @@
       "pre-commit": "eslint . --ext .ts"
     }
   },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
   "name": "pnsjs",
   "author": "Justice Eziefule",
-  "description": "A Javascript library for interacting with the PNS smart contract",
+  "description": "A Typescript library for interacting with the PNS smart contract",
   "module": "dist/pnsjs.esm.js",
   "size-limit": [
     {
@@ -50,21 +50,19 @@
     }
   ],
   "dependencies": {
+    "axios": "^1.3.3",
     "ethers": "^5.6.1",
     "web3-utils": "^1.8.1"
   },
   "devDependencies": {
-    "@ethersproject/abi": "^5.6.0",
-    "@ethersproject/providers": "^5.6.2",
-    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
-    "@openzeppelin/contracts": "^4.5.0",
+    "@size-limit/esbuild": "^8.2.4",
+    "@size-limit/esbuild-why": "^8.2.4",
     "@size-limit/preset-small-lib": "^8.1.0",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.6.0",
-    "hardhat": "^2.12.2",
     "husky": "^8.0.2",
     "prettier": "^2.8.4",
     "size-limit": "^8.1.0",

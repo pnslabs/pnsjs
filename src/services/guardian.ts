@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { IContract, ISigner } from '../types';
 import { ErrorMessage, hashPhoneNumber } from '../utils';
+import axios from 'axios';
 
 /**
  * @dev Interacts with the guardian Backend to send OTP to phone number
@@ -11,19 +12,13 @@ import { ErrorMessage, hashPhoneNumber } from '../utils';
 
 const getOtpFunc = async (phoneNumber: string, country: string) => {
   try {
-    const response = await fetch(`${process.env.SERVER_URL}/otp`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        phoneNumber,
-        country,
-      }),
+    const response = await axios.post(`${process.env.SERVER_URL}/otp`, {
+      phoneNumber,
+      country,
     });
-    return response.json();
+    return response;
   } catch (error) {
-    ErrorMessage(error);
+    return ErrorMessage(error);
   }
 };
 
@@ -49,22 +44,19 @@ const verifyPhoneFunc = async (
       ethers.utils.arrayify(hashedMessage)
     );
 
-    const response = await fetch(`${process.env.SERVER_URL}/signature/verify`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const response = await axios.post(
+      `${process.env.SERVER_URL}/signature/verify`,
+      {
         phoneNumber,
         otp,
         signature,
         hashedMessage,
-      }),
-    });
+      }
+    );
 
-    return response.json();
+    return response;
   } catch (error) {
-    ErrorMessage(error);
+    return ErrorMessage(error);
   }
 };
 
@@ -81,7 +73,7 @@ const getVerificationRecordFunc = async (
   try {
     const hash = hashPhoneNumber(phoneNumber);
 
-    const record = await contract.method.getVerificationRecord(hash);
+    const record = await contract.getVerificationRecord(hash);
 
     return record;
   } catch (error) {

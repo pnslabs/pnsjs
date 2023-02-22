@@ -8,7 +8,7 @@ import { IContract } from '../types';
  */
 const getRegistryCostInUSD = async (contract: IContract) => {
   try {
-    const registryCost = await contract.method.registryCostInUSD();
+    const registryCost = await contract.registryCostInUSD();
     return registryCost;
   } catch (error) {
     ErrorMessage(error);
@@ -23,7 +23,7 @@ const getRegistryCostInUSD = async (contract: IContract) => {
 const getRegistryCostInETH = async (contract: IContract) => {
   try {
     const registryCostInUsd = await getRegistryCostInUSD(contract);
-    const registryCostInEth = await contract.method.convertUSDToETH(
+    const registryCostInEth = await contract.convertUSDToETH(
       registryCostInUsd.toString()
     );
     return registryCostInEth;
@@ -39,7 +39,7 @@ const getRegistryCostInETH = async (contract: IContract) => {
  */
 const getRegistryRenewCostInUSD = async (contract: IContract) => {
   try {
-    const registryRenewCost = await contract.method.registryRenewCostInUSD();
+    const registryRenewCost = await contract.registryRenewCostInUSD();
     return registryRenewCost;
   } catch (error) {
     ErrorMessage(error);
@@ -54,7 +54,7 @@ const getRegistryRenewCostInUSD = async (contract: IContract) => {
 const getRegistryRenewCostInETH = async (contract: IContract) => {
   try {
     const registryRenewCostInUsd = await getRegistryRenewCostInUSD(contract);
-    const registryRenewCostInEth = await contract.method.convertUSDToETH(
+    const registryRenewCostInEth = await contract.convertUSDToETH(
       registryRenewCostInUsd.toString()
     );
     return registryRenewCostInEth;
@@ -84,9 +84,21 @@ const ErrorMessage = (message?: any) => {
       ? message
       : 'Something went wrong. Please try again later.';
 
+  const contractErrorMessage =
+    message?.error?.body && JSON.parse(message?.error?.body)?.error?.message;
+
   const systemMessage = message?.errorArgs && message?.errorArgs[0];
 
-  return new Error(systemMessage || defaultMsg);
+  const contractRevertErrorMessage =
+    message?.error?.error?.body &&
+    JSON.parse(message?.error?.error?.body)?.error?.message;
+
+  return new Error(
+    contractErrorMessage ||
+      contractRevertErrorMessage ||
+      systemMessage ||
+      defaultMsg
+  );
 };
 
 /**
@@ -98,16 +110,27 @@ const acceptedNetworks = [1, 5, 1337, 97];
 /**
  * @dev Parse ether to wei
  * @param amount Amount of ether to parse
+ * @returns The amount in ether
+ */
+const ethToWei = (amount: BigNumber | number) => {
+  const balance = amount.toString();
+  return ethers.utils.parseEther(balance);
+};
+
+/**
+ * @dev Parse wei to ether
+ * @param amount Amount of wei to parse
  * @returns The amount in wei
  */
-const parseEther = (amount: BigNumber) => {
-  return ethers.utils.parseEther(amount.toString());
+const weiToEth = (amount: BigNumber) => {
+  return ethers.utils.formatEther(amount);
 };
 
 export {
   ErrorMessage,
   hashPhoneNumber,
-  parseEther,
+  ethToWei,
+  weiToEth,
   acceptedNetworks,
   getRegistryCostInETH,
   getRegistryCostInUSD,

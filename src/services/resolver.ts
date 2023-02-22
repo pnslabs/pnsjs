@@ -11,7 +11,7 @@ import { ErrorMessage, hashPhoneNumber } from '../utils';
 const getResolverFunc = async (phoneNumber: string, contract: IContract) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
-    const resolver = await contract.method.getResolver(hash);
+    const resolver = await contract.getResolver(hash);
     return resolver;
   } catch (error) {
     ErrorMessage(error);
@@ -34,7 +34,7 @@ const linkPhoneToWalletFunc = async (
 ) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
-    const tx = await contract.method.linkPhoneToWallet(hash, address, label);
+    const tx = await contract.linkPhoneToWallet(hash, address, label);
     tx.wait();
 
     return tx;

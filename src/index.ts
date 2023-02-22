@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { PNSRegistryAbi } from './abi';
+import { PnsRegistryAbi } from './abi';
 import { core } from './addresses';
 import { Contract } from './libs/contract';
 // import { ethers } from 'ethers';
@@ -20,7 +20,7 @@ import {
   claimExpiredPhoneRecordFunc,
   renewRecordFunc,
 } from './services/registry';
-import { IChainId, IContract, IProvider, ISigner } from './types';
+import { IContract, IProvider, ISigner, IChainId } from './types';
 import { ErrorMessage } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -34,19 +34,32 @@ require('dotenv').config();
  */
 export class PNS {
   protected provider?: IProvider;
-  protected contract?: IContract;
+  private contract?: IContract;
   protected signer?: ISigner;
+  protected registryAddress?: string;
 
-  constructor(provider: IProvider, signer: ISigner, chainId: number) {
-    this.provider = provider;
+  constructor(signer: ISigner, registryAddress?: string) {
+    this.provider = signer.provider;
     this.signer = signer;
-    this.contract = Contract(
-      provider,
-      core[chainId as IChainId].PNSRegistry,
-      PNSRegistryAbi.abi
-    );
+    this.registryAddress = registryAddress || '';
+  }
 
-    // this.getContract(provider);
+  /**
+   * @dev Initialize the contract object
+   * @returns The contract object
+   * @example pns.initialize();
+   */
+  public async initialize() {
+    try {
+      const chainId = await this.signer.getChainId();
+      const address =
+        this.registryAddress || core[chainId as IChainId].PNSRegistry;
+
+      this.contract = Contract(address, PnsRegistryAbi.abi, this.signer);
+      return this.contract;
+    } catch (error) {
+      return ErrorMessage(error);
+    }
   }
 
   /**
@@ -56,12 +69,8 @@ export class PNS {
    * @example const record = await pns.getRecord('+1234567890');
    */
   public async getRecord(phoneNumber: string) {
-    try {
-      const record = await getRecordFunc(phoneNumber, this.contract!);
-      return record;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const record = await getRecordFunc(phoneNumber, this.contract!);
+    return record;
   }
 
   /**
@@ -77,17 +86,13 @@ export class PNS {
     signer: string,
     label: string
   ) {
-    try {
-      const tx = await setPhoneRecordFunc(
-        phoneNumber,
-        signer,
-        label,
-        this.contract!
-      );
-      return tx;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const tx = await setPhoneRecordFunc(
+      phoneNumber,
+      signer,
+      label,
+      this.contract!
+    );
+    return tx;
   }
 
   /**
@@ -97,12 +102,8 @@ export class PNS {
    * @example const record = await pns.renewRecord('+1234567890');
    */
   public async renewRecord(phoneNumber: string) {
-    try {
-      const tx = await renewRecordFunc(phoneNumber, this.contract!);
-      return tx;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const tx = await renewRecordFunc(phoneNumber, this.contract!);
+    return tx;
   }
 
   /**
@@ -118,17 +119,13 @@ export class PNS {
     signer: string,
     label: string
   ) {
-    try {
-      const tx = await claimExpiredPhoneRecordFunc(
-        phoneNumber,
-        signer,
-        label,
-        this.contract!
-      );
-      return tx;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const tx = await claimExpiredPhoneRecordFunc(
+      phoneNumber,
+      signer,
+      label,
+      this.contract!
+    );
+    return tx;
   }
 
   /**
@@ -138,12 +135,8 @@ export class PNS {
    * @example const record = await pns.isRecordVerified('+1234567890');
    */
   public async isRecordVerified(phoneNumber: string) {
-    try {
-      const status = await isRecordVerifiedFunc(phoneNumber, this.contract!);
-      return status;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const status = await isRecordVerifiedFunc(phoneNumber, this.contract!);
+    return status;
   }
 
   /**
@@ -153,12 +146,8 @@ export class PNS {
    * @example const record = await pns.recordExists('+1234567890');
    */
   public async recordExists(phoneNumber: string) {
-    try {
-      const status = await recordExistsFunc(phoneNumber, this.contract!);
-      return status;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const status = await recordExistsFunc(phoneNumber, this.contract!);
+    return status;
   }
 
   /**
@@ -168,12 +157,8 @@ export class PNS {
    * @example const resolvers = await pns.getResolver('+1234567890');
    */
   public async getResolvers(phoneNumber: string) {
-    try {
-      const resolver = await getResolverFunc(phoneNumber, this.contract!);
-      return resolver;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const resolver = await getResolverFunc(phoneNumber, this.contract!);
+    return resolver;
   }
 
   /**
@@ -189,17 +174,13 @@ export class PNS {
     address: string,
     label: string
   ) {
-    try {
-      const tx = await linkPhoneToWalletFunc(
-        phoneNumber,
-        address,
-        label,
-        this.contract!
-      );
-      return tx;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const tx = await linkPhoneToWalletFunc(
+      phoneNumber,
+      address,
+      label,
+      this.contract!
+    );
+    return tx;
   }
 
   /**
@@ -207,15 +188,11 @@ export class PNS {
    * @param phoneNumber Phone number to receive OTP
    * @param country An optional country code (ISO 3166-1 alpha-2 e.g US)
    * @returns Result of the request
-   * @example const response = await pns.getOtp('+1234567890', 'US);
+   * @example const response = await pns.getOtp('+1234567890', 'US');
    */
   public async getOtp(phoneNumber: string, country: string) {
-    try {
-      const response = await getOtpFunc(phoneNumber, country);
-      return response;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const response = await getOtpFunc(phoneNumber, country);
+    return response;
   }
 
   /**
@@ -226,12 +203,8 @@ export class PNS {
    * @example const response = await pns.verifyPhone('+1234567890', '123456');
    */
   public async verifyPhone(phoneNumber: string, otp: string) {
-    try {
-      const response = await verifyPhoneFunc(phoneNumber, otp, this.signer);
-      return response;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const response = await verifyPhoneFunc(phoneNumber, otp, this.signer);
+    return response;
   }
 
   /**
@@ -241,15 +214,11 @@ export class PNS {
    * @example const response = await pns.getVerificationRecord('+1234567890');
    */
   public async getVerificationRecord(phoneNumber: string) {
-    try {
-      const response = await getVerificationRecordFunc(
-        phoneNumber,
-        this.contract!
-      );
-      return response;
-    } catch (error) {
-      ErrorMessage(error);
-    }
+    const response = await getVerificationRecordFunc(
+      phoneNumber,
+      this.contract!
+    );
+    return response;
   }
 }
 

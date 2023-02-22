@@ -3,7 +3,7 @@ import {
   ErrorMessage,
   getRegistryRenewCostInETH,
   hashPhoneNumber,
-  parseEther,
+  ethToWei,
 } from '../utils';
 import { getRegistryCostInETH } from '../utils';
 
@@ -22,7 +22,6 @@ const getRecordFunc = async (phoneNumber: string, contract: IContract) => {
   } catch (error) {
     const message = await ErrorMessage(error);
     return message;
-    return ErrorMessage(error);
   }
 };
 
@@ -30,7 +29,7 @@ const getRecordFunc = async (phoneNumber: string, contract: IContract) => {
  * @dev Interacts with the smart contract to create & set the record information of a given phone number
  * @param phoneNumber Phone number to resolve
  * @param signer Signer address
- * @param label Ceypro label
+ * @param label Crypro label
  * @param contract Contract object
  * @returns The transaction response
  */
@@ -44,19 +43,16 @@ const setPhoneRecordFunc = async (
     const registryCost = await getRegistryCostInETH(contract);
     const hash = hashPhoneNumber(phoneNumber);
 
-    const txResponse = await contract.method.setPhoneRecord(
-      hash,
-      signer,
-      label,
-      {
-        value: parseEther(registryCost),
-      }
-    );
+    const txResponse = await contract.setPhoneRecord(hash, signer, label, {
+      value: ethToWei(registryCost),
+      from: signer,
+    });
     await txResponse.wait();
 
     return txResponse;
   } catch (error) {
-    ErrorMessage(error);
+    const message = await ErrorMessage(error);
+    return message;
   }
 };
 
@@ -71,8 +67,8 @@ const renewRecordFunc = async (phoneNumber: string, contract: IContract) => {
     const renewCost = await getRegistryRenewCostInETH(contract);
     const hash = hashPhoneNumber(phoneNumber);
 
-    const txResponse = await contract.method.renew(hash, {
-      value: parseEther(renewCost),
+    const txResponse = await contract.renew(hash, {
+      value: ethToWei(renewCost),
     });
     await txResponse.wait();
 
@@ -100,12 +96,12 @@ const claimExpiredPhoneRecordFunc = async (
     const registryCost = await getRegistryCostInETH(contract);
     const hash = hashPhoneNumber(phoneNumber);
 
-    const txResponse = await contract.method.claimExpiredPhoneRecord(
+    const txResponse = await contract.claimExpiredPhoneRecord(
       hash,
       signer,
       label,
       {
-        value: parseEther(registryCost),
+        value: ethToWei(registryCost),
       }
     );
     await txResponse.wait();
@@ -129,7 +125,7 @@ const isRecordVerifiedFunc = async (
   try {
     const hash = hashPhoneNumber(phoneNumber);
 
-    const status = await contract.method.isRecordVerified(hash);
+    const status = await contract.isRecordVerified(hash);
 
     return status;
   } catch (error) {
@@ -147,7 +143,7 @@ const recordExistsFunc = async (phoneNumber: string, contract: IContract) => {
   try {
     const hash = hashPhoneNumber(phoneNumber);
 
-    const status = await contract.method.recordExists(hash);
+    const status = await contract.recordExists(hash);
 
     return status;
   } catch (error) {
