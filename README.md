@@ -1,4 +1,4 @@
-# ![PNSjs](https://raw.githubusercontent.com/pnsfoundation/pns-website/main/public/icons/logo.svg?token=GHSAT0AAAAAABTHTOKCC2JFHQ3WTUROU6GYY4H3QBA)
+# ![PNSjs](https://raw.githubusercontent.com/pnslabs/pns-website/main/public/logo/pns.png)
 
 The PNS javascript library, with [ethers.js](https://github.com/ethers-io/ethers.js) under the hood.
 
@@ -19,9 +19,11 @@ To create a new PNS instance, you have to pass it in the PNS constructor.
 import { PNS } from '@pnslabs/pnsjs';
 import { ethers } from 'ethers';
 
-let providerUrl = 'https://mainnet.infura.io/v3/your-api-key';
+let rpcUrl = 'https://mainnet.infura.io/v3/your-api-key';
 
-const provider = new ethers.providers.JsonRpcProvider(providerUrl);
+const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
-const PNSInstance = new PNS(provider);
+const signer = provider.getSigner()
+
+const PNSInstance = new PNS(signer);
 ```
