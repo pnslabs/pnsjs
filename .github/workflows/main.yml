@@ -1,32 +1,49 @@
-# name: CI
-# on: [push]
-# jobs:
-#   build:
-#     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
+name: CI
 
-#     runs-on: ${{ matrix.os }}
-#     strategy:
-#       matrix:
-#         node: ['10.x', '12.x', '14.x']
-#         os: [ubuntu-latest, windows-latest, macOS-latest]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-#     steps:
-#       - name: Checkout repo
-#         uses: actions/checkout@v2
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-#       - name: Use Node ${{ matrix.node }}
-#         uses: actions/setup-node@v1
-#         with:
-#           node-version: ${{ matrix.node }}
+    steps:
+      - uses: actions/checkout@v2
 
-#       - name: Install deps and build (with cache)
-#         uses: bahmutov/npm-install@v1
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
 
-#       - name: Lint
-#         run: yarn lint
+      - name: Install Dependencies
+        run: |
+          yarn install --frozen-lockfile
 
-#       - name: Test
-#         run: yarn test --ci --coverage --maxWorkers=2
+      - name: Build
+        run: |
+          yarn run build
 
-#       - name: Build
-#         run: yarn build
+      - name: Run Tests
+        run: |
+          yarn run test
+
+      - name: Lint
+        run: |
+          yarn run lint
+
+      - name: Type Check
+        run: |
+          yarn run typecheck
+
+      - name: Audit dependencies & fail on high or critical vulnerabilities
+        run: |
+          yarn audit --severity=high
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist
