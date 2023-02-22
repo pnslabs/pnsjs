@@ -24,7 +24,8 @@
     "size": "size-limit",
     "analyze": "size-limit --why",
     "prettify": "npx prettier '**/*.{json,sol,md,ts}' --write",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "audit": "yarn audit --severity=high"
   },
   "peerDependencies": {
     "ethers": "*"
