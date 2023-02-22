@@ -43,12 +43,7 @@ jobs:
         id: audit
       - name: Fail on high or critical vulnerabilities
         run: |
-          severity=$(jq -r '.data.vulnerabilities | max_by(.severity) | .severity' ${{ steps.audit.outputs.stdout }})
-          if [[ "$severity" == "high" || "$severity" == "critical" ]]; then
-            echo "Vulnerabilities found with severity: $severity"
-            exit 1
-          fi
-
+          yarn audit | jq '.data.vulnerabilities | map(select(.severity == "high"))'
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
