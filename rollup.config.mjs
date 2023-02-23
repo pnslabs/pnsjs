@@ -4,20 +4,24 @@ import resolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 
 export default [
+  // Web bundle
   {
     input: 'src/index.ts',
-    output: [
-      {
-        file: 'dist/bundle.cjs.js',
-        format: 'cjs',
-        sourcemap: true,
-      },
-      {
-        file: 'dist/bundle.esm.js',
-        format: 'esm',
-        sourcemap: true,
-      },
-    ],
+    output: {
+      file: 'dist/pns.js',
+      format: 'es',
+    },
+    plugins: [typescript(), resolve(), commonjs(), json()],
+    // Exclude Node.js-specific modules from the web bundle
+    external: ['fs', 'path'],
+  },
+  // Node.js bundle
+  {
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/pns-node.js',
+      format: 'cjs',
+    },
     plugins: [typescript(), resolve(), commonjs(), json()],
   },
 ];
