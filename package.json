@@ -2,6 +2,8 @@
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "browser": "dist/index.bundle.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
@@ -38,8 +40,6 @@
   "name": "pnsjs",
   "author": "Justice Eziefule",
   "description": "A Typescript library for interacting with the PNS smart contract",
-  "module": "dist/index.es.js",
-  "browser": "dist/index.bundle.js",
   "type": "module",
   "repository": {
     "type": "git",

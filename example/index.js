@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { ethers } from 'ethers';
 // const { PNS } = require('../dist/pns-node.js');
-import { PNS } from '../dist/index.js';
+const PNS = require('../dist/index.js');
 
 const rpc = 'http://127.0.0.1:8545';
 const privateKey =
