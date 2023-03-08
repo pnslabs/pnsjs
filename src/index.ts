@@ -32,10 +32,10 @@ require('dotenv').config();
  * @param signer Signer object
  * @param chainId The connected chain id
  */
-export class PNS {
+export default class PNS {
   protected provider?: IProvider;
   private contract?: IContract;
-  protected signer?: ISigner;
+  protected signer: ISigner;
   protected registryAddress?: string;
 
   constructor(signer: ISigner, registryAddress?: string) {
@@ -222,4 +222,3 @@ export class PNS {
   }
 }
 
-export default PNS;

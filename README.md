@@ -2,6 +2,8 @@
 
 The PNS javascript library, with [ethers.js](https://github.com/ethers-io/ethers.js) under the hood.
 
+## DISCLAMER: This repo is currently under active development and is not ready to be used in production 
+
 ## Installation
 
 Install @pnslabs/pnsjs, alongside [ethers](https://github.com/ethers-io/ethers.js).
